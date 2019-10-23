@@ -14,7 +14,7 @@ function TabPlayer(args) {
     this.debug = false;
 
     this.loadTab(args);
-    this.resetCursor = this.setupCursorAnimation();
+    
 }
 
 
@@ -46,18 +46,25 @@ TabPlayer.prototype.loadTab = function(args) {
         notesPerBeat: this.notesPerBeat
     });
 
+    this.addToolbar();
+    
+}
+
+TabPlayer.prototype.startTab = function() {
+    MusicTracker.start();
     this.sampleRate = MusicTracker.getSampleRate();
     this.pixelMap = VexflowParser.preparePixelMap(this.tabDiv);
+
+    this.initializeCursor();
+    this.addToolbar();
+
+    this.resetCursor = this.setupCursorAnimation();
 
     // reset the cursor when replacing an existing tab
     if (this.resetCursor) {
         this.resetCursor();
     }
-
-    this.initializeCursor();
-    this.addToolbar();
 }
-
 
 
 TabPlayer.prototype.translateCursor = function(x, y) {
@@ -244,6 +251,10 @@ TabPlayer.prototype.setupCursorAnimation = function() {
 
 
 TabPlayer.prototype.play = function() {
+
+    if (!this.resetCursor) {
+        this.startTab();
+    }
 
     if (!MusicTracker.getStartTime()) {
         this.resetCursor();

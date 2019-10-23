@@ -248,7 +248,9 @@ var MusicTracker = (function() {
         if (typeof args.notesPerBeat === "number") {
           song.notesPerBeat = args.notesPerBeat;
         }
+    };
 
+    var start = function() {
         // if audioDevice already exists restart song w/ new arguments
         (typeof dev === 'undefined') ? buildAudio() : restart();
     };
@@ -314,7 +316,7 @@ var MusicTracker = (function() {
 
 
     var getVolume = function() {
-        return gainControl.gain * 10;
+        return gainControl?gainControl.gain * 10:0;
     };
 
 
@@ -352,6 +354,8 @@ var MusicTracker = (function() {
     // return public methods
     return {
         init: init,
+        // LP: fixed audiolib.js:3758 The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page.
+        start: start,
         play: play,
         pause: pause,
         stop: stop,
